@@ -1,0 +1,26 @@
+Prerequisites
+
+*.d
+*.o
+*.obj
+*.exe
+*.lib
+*.a
+*.dylib
+*.pdb
+
+CMake Build Folders
+
+build/
+cmake-build-debug/
+out/
+
+IDE Settings (Mac/VSCode)
+
+.DS_Store
+.vscode/
+.idea/
+
+Mac specific
+
+*.dSYM/
