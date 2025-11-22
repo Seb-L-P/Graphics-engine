@@ -7,22 +7,30 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(glfw3 3.3 REQUIRED)
 find_package(PkgConfig REQUIRED)
 
-# Find Assimp using PkgConfig
+# Find Assimp
 pkg_check_modules(ASSIMP REQUIRED assimp)
-
-# Tell linker where to find the library files
 link_directories(${ASSIMP_LIBRARY_DIRS})
 
 # 2. Setup Executable
+# We added all the ImGui .cpp files here
 add_executable(MyGraphicsEngine 
     main.cpp 
     src/glad.c 
     src/stb_image_impl.cpp
+    src/imgui/imgui.cpp
+    src/imgui/imgui_demo.cpp
+    src/imgui/imgui_draw.cpp
+    src/imgui/imgui_tables.cpp
+    src/imgui/imgui_widgets.cpp
+    src/imgui/imgui_impl_glfw.cpp
+    src/imgui/imgui_impl_opengl3.cpp
 )
 
 # 3. Include Directories
+# We added include/imgui so we can just type #include "imgui.h"
 target_include_directories(MyGraphicsEngine PRIVATE 
     include 
+    include/imgui
     ${ASSIMP_INCLUDE_DIRS} 
 )
 
@@ -37,9 +45,7 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(MyGraphicsEngine pthread dl)
 endif()
 
-# --- 5. AUTOMATIC ASSET COPYING (NEW) ---
-# This finds all asset files in your project root and copies them to the build folder
-# so the executable can find them at runtime.
+# 5. Auto-Copy Assets
 file(GLOB ASSETS
     "${CMAKE_SOURCE_DIR}/*.vert"
     "${CMAKE_SOURCE_DIR}/*.frag"
@@ -51,7 +57,4 @@ file(GLOB ASSETS
 
 if(ASSETS)
     file(COPY ${ASSETS} DESTINATION ${CMAKE_BINARY_DIR})
-    message(STATUS "Auto-Copied assets (shaders/models) to build directory.")
-else()
-    message(WARNING "No assets found in root directory to copy!")
 endif()
